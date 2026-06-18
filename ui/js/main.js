@@ -32,23 +32,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
     baseLayers["Mapbox Satellite"].addTo(map);
 
+    // Core radar overlays
     const overlayReflectivity = L.layerGroup().addTo(map);
     const overlayVelocity = L.layerGroup();
+
+    // Structural overlays
+    const overlayStates = L.layerGroup();
+    const overlayCounties = L.layerGroup();
+    const overlayHighways = L.layerGroup();
+
+    // Storm / analysis overlays
+    const overlayStormTracks = L.layerGroup();
+    const overlayMesoscale = L.layerGroup();
     const overlayMRMS = L.layerGroup();
     const overlayAI = L.layerGroup();
+
+    // City labels + alerts
+    const overlayCities = L.layerGroup().addTo(map);
+    const overlayAlerts = L.layerGroup().addTo(map);
 
     const overlays = {
         "NOAA Reflectivity": overlayReflectivity,
         "NOAA Velocity": overlayVelocity,
+        "Cities": overlayCities,
+        "NWS Alerts (WWA)": overlayAlerts,
+        "States (stub)": overlayStates,
+        "Counties (stub)": overlayCounties,
+        "Highways (stub)": overlayHighways,
+        "Storm Tracks (stub)": overlayStormTracks,
+        "Mesoscale (stub)": overlayMesoscale,
         "MRMS (stub)": overlayMRMS,
         "AI Overlay (stub)": overlayAI
     };
 
     L.control.layers(baseLayers, overlays, { position: "topright", collapsed: false }).addTo(map);
 
-    const reflLayer = NOAA.addReflectivity(overlayReflectivity);
-    const velLayer = NOAA.addVelocity(overlayVelocity);
+    // Radar
+    NOAA.addReflectivity(overlayReflectivity);
+    NOAA.addVelocity(overlayVelocity);
 
+    // City labels
+    CityLabels.attach(map, overlayCities);
+
+    // NWS alerts
+    AlertsOverlay.attach(map, overlayAlerts);
+
+    // Opacity control for radar
     const opacitySlider = document.getElementById("opacity-slider");
     opacitySlider.addEventListener("input", (e) => {
         const value = parseFloat(e.target.value);
@@ -56,9 +85,5 @@ document.addEventListener("DOMContentLoaded", () => {
         overlayVelocity.eachLayer(l => l.setOpacity(value));
     });
 
-    document.getElementById("frame-label").textContent = "NOAA Radar (Reflectivity / Velocity)";
-});
-    // City labels overlay
-    const overlayCities = L.layerGroup().addTo(map);
-    CityLabels.attach(map, overlayCities);
+    document.getElementById("frame-label").textContent = "NOAA Radar + Overlays";
 });

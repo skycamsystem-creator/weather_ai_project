@@ -1,5 +1,4 @@
 const CityLabels = (() => {
-    // Basic starter dataset (expand later)
     const cities = [
         { name: "New York", lat: 40.7128, lon: -74.0060, pop: 8400000 },
         { name: "Los Angeles", lat: 34.0522, lon: -118.2437, pop: 4000000 },
@@ -19,7 +18,6 @@ const CityLabels = (() => {
     function attach(map, group) {
         mapRef = map;
         labelGroup = group;
-
         map.on("zoomend", updateLabels);
         updateLabels();
     }
@@ -35,7 +33,7 @@ const CityLabels = (() => {
             if (zoom === 6 && city.pop < 300000) return;
             if (zoom === 7 && city.pop < 100000) return;
             if (zoom === 8 && city.pop < 30000) return;
-            // zoom 9+ shows all cities
+            // zoom 9+ shows all
 
             const label = L.marker([city.lat, city.lon], {
                 icon: L.divIcon({

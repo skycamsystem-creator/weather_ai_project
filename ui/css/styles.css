@@ -53,6 +53,8 @@ html, body {
 .leaflet-container {
     background: #050711;
 }
+
+/* City labels */
 .city-label span {
     color: #ffffff;
     font-size: 14px;
@@ -60,3 +62,27 @@ html, body {
     text-shadow: 0 0 4px #000, 0 0 8px #000;
     pointer-events: none;
 }
+
+/* Alert polygons */
+.alert-warning {
+    color: #ff0000;
+    weight: 2;
+    fillColor: #ff0000;
+    fillOpacity: 0.25;
+}
+
+.alert-watch {
+    color: #ffcc00;
+    weight: 2;
+    fillColor: #ffcc00;
+    fillOpacity: 0.25;
+}
+
+.alert-advisory {
+    color: #00bfff;
+    weight: 2;
+    fillColor: #00bfff;
+    fillOpacity: 0.25;
+}
+
+/* Stub layers (states, counties, highways) can share a subtle style later */

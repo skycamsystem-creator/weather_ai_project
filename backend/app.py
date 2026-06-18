@@ -1,3 +1,4 @@
+from backend.radar import rainviewer
 # skybot/weather_ai_project/app.py
 
 import uvicorn
@@ -5,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Routers
-from radar import rainviewer
+
 
 app = FastAPI(
     title="Skybot Weather AI Backend",

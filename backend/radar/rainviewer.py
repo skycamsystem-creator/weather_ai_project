@@ -1,5 +1,3 @@
-# skybot/weather_ai_project/radar/rainviewer.py
-
 import requests
 from fastapi import APIRouter, HTTPException, Response
 

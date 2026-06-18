@@ -54,7 +54,7 @@ html, body {
     background: #050711;
 }
 
-/* City labels */
+/* City labels above radar */
 .city-label span {
     color: #ffffff;
     font-size: 14px;
@@ -63,26 +63,7 @@ html, body {
     pointer-events: none;
 }
 
-/* Alert polygons */
-.alert-warning {
-    color: #ff0000;
-    weight: 2;
-    fillColor: #ff0000;
-    fillOpacity: 0.25;
+/* Just to keep polygons readable */
+.leaflet-interactive {
+    cursor: pointer;
 }
-
-.alert-watch {
-    color: #ffcc00;
-    weight: 2;
-    fillColor: #ffcc00;
-    fillOpacity: 0.25;
-}
-
-.alert-advisory {
-    color: #00bfff;
-    weight: 2;
-    fillColor: #00bfff;
-    fillOpacity: 0.25;
-}
-
-/* Stub layers (states, counties, highways) can share a subtle style later */

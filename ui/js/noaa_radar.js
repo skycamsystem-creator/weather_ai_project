@@ -6,7 +6,7 @@ const NOAA = (() => {
         const layer = L.tileLayer(REFLECTIVITY, {
             tileSize: 256,
             opacity: 0.85,
-            zIndex: 9999
+            zIndex: 900
         });
         group.addLayer(layer);
         return layer;
@@ -15,8 +15,8 @@ const NOAA = (() => {
     function addVelocity(group) {
         const layer = L.tileLayer(VELOCITY, {
             tileSize: 256,
-            opacity: 0.85,
-            zIndex: 9999
+            opacity: 0.75,
+            zIndex: 905
         });
         group.addLayer(layer);
         return layer;

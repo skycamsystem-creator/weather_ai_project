@@ -1,14 +1,12 @@
 const AlertsOverlay = (() => {
     const NWS_ALERTS_URL = "https://api.weather.gov/alerts/active";
 
-    let mapRef = null;
     let alertsGroup = null;
 
     function attach(map, group) {
-        mapRef = map;
         alertsGroup = group;
         loadAlerts();
-        setInterval(loadAlerts, 5 * 60 * 1000); // refresh every 5 minutes
+        setInterval(loadAlerts, 5 * 60 * 1000);
     }
 
     async function loadAlerts() {
@@ -30,19 +28,15 @@ const AlertsOverlay = (() => {
                 const event = props.event || "";
                 const severity = (props.severity || "").toLowerCase();
 
-                let cls = "alert-advisory";
-                if (severity === "severe" || severity === "extreme") cls = "alert-warning";
-                else if (severity === "moderate") cls = "alert-watch";
+                let color = "#00bfff"; // advisory default
+                if (severity === "severe" || severity === "extreme") color = "#ff0000";
+                else if (severity === "moderate") color = "#ffcc00";
 
                 const layer = L.geoJSON(f.geometry, {
                     style: {
-                        color: cls === "alert-warning" ? "#ff0000"
-                              : cls === "alert-watch" ? "#ffcc00"
-                              : "#00bfff",
+                        color,
                         weight: 2,
-                        fillColor: cls === "alert-warning" ? "#ff0000"
-                                  : cls === "alert-watch" ? "#ffcc00"
-                                  : "#00bfff",
+                        fillColor: color,
                         fillOpacity: 0.25
                     }
                 }).bindPopup(`

@@ -88,5 +88,77 @@ document.addEventListener("DOMContentLoaded", () => {
         overlayVelocity.eachLayer(l => l.setOpacity(value));
     });
 
-    document.getElementById("frame-label").textContent = "NOAA Radar + Cities + Alerts (Hybrid Pro Colors)";
+    const frameLabel = document.getElementById("frame-label");
+
+    // Mode handling
+    const modeButtons = document.querySelectorAll("#mode-buttons button");
+
+    function setActiveModeButton(mode) {
+        modeButtons.forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.mode === mode);
+        });
+    }
+
+    function setMode(mode) {
+        // Reset overlays
+        map.eachLayer(layer => {
+            // keep base layers; overlays are managed via groups
+        });
+
+        // Ensure current base stays; we’ll just toggle overlays
+        // Basemap choices per mode:
+        if (mode === "chase") {
+            map.removeLayer(baseLayers["OpenStreetMap"]);
+            map.removeLayer(baseLayers["Mapbox Satellite"]);
+            baseLayers["Dark Matter"].addTo(map);
+        } else if (mode === "broadcast") {
+            map.removeLayer(baseLayers["Dark Matter"]);
+            baseLayers["Mapbox Satellite"].addTo(map);
+        } else if (mode === "analyst") {
+            map.removeLayer(baseLayers["Mapbox Satellite"]);
+            baseLayers["OpenStreetMap"].addTo(map);
+        }
+
+        // Turn everything off first
+        map.removeLayer(overlayReflectivity);
+        map.removeLayer(overlayVelocity);
+        map.removeLayer(overlayCities);
+        map.removeLayer(overlayAlerts);
+        map.removeLayer(overlayBoundaries);
+        map.removeLayer(overlayRoads);
+
+        // Mode presets
+        if (mode === "chase") {
+            overlayReflectivity.addTo(map);
+            overlayVelocity.addTo(map);
+            overlayCities.addTo(map);
+            overlayAlerts.addTo(map);
+            overlayRoads.addTo(map);
+            frameLabel.textContent = "Chase Mode – Vel + Roads + Alerts";
+        } else if (mode === "broadcast") {
+            overlayReflectivity.addTo(map);
+            overlayAlerts.addTo(map);
+            overlayBoundaries.addTo(map);
+            overlayCities.addTo(map);
+            frameLabel.textContent = "Broadcast Mode – Sat + Refl + Alerts";
+        } else if (mode === "analyst") {
+            overlayReflectivity.addTo(map);
+            overlayVelocity.addTo(map);
+            overlayAlerts.addTo(map);
+            overlayBoundaries.addTo(map);
+            overlayCities.addTo(map);
+            frameLabel.textContent = "Analyst Mode – Refl + Vel + Alerts";
+        }
+
+        setActiveModeButton(mode);
+    }
+
+    modeButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            setMode(btn.dataset.mode);
+        });
+    });
+
+    // Default mode
+    setMode("analyst");
 });

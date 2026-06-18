@@ -11,17 +11,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         "OpenStreetMap": L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19
         }),
-
         "ESRI Satellite": L.tileLayer(
             "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{x}/{y}",
             { maxZoom: 19 }
         ),
-
         "ESRI Streets": L.tileLayer(
             "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{x}/{y}",
             { maxZoom: 19 }
         ),
-
         "Dark Matter": L.tileLayer(
             "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
             { maxZoom: 19 }
@@ -30,9 +27,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     baseLayers["OpenStreetMap"].addTo(map);
 
-    L.control.layers(baseLayers, {}, { position: "topright" }).addTo(map);
+    // Radar / MRMS / AI overlay groups
+    const overlayReflectivity = L.layerGroup().addTo(map);
+    const overlayFuture = L.layerGroup().addTo(map);
+    const overlayVelocity = L.layerGroup();
+    const overlayMRMS = L.layerGroup();
+    const overlayAI = L.layerGroup();
 
-    RainViewer.attachToMap(map);
+    const overlays = {
+        "Radar Reflectivity": overlayReflectivity,
+        "Radar Future": overlayFuture,
+        "Radar Velocity (stub)": overlayVelocity,
+        "MRMS (stub)": overlayMRMS,
+        "AI Overlay (stub)": overlayAI
+    };
+
+    L.control.layers(baseLayers, overlays, { position: "topright", collapsed: false }).addTo(map);
+
+    RainViewer.attach(map, overlayReflectivity, overlayFuture);
 
     const frameLabel = document.getElementById("frame-label");
     const prevBtn = document.getElementById("prev-frame");

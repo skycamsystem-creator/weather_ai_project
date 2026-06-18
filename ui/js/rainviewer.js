@@ -4,9 +4,13 @@ const RainViewer = (() => {
 
     let frames = [];
     let currentIndex = 0;
-    let tileLayer = null;
-    let mapRef = null;
     let opacity = 0.8;
+
+    let mapRef = null;
+    let overlayReflectivity = null;
+    let overlayFuture = null;
+
+    let currentLayer = null;
 
     async function loadMeta() {
         const res = await fetch(META_URL);
@@ -14,22 +18,32 @@ const RainViewer = (() => {
 
         const data = await res.json();
         const past = data.radar?.past || [];
+        const nowcast = data.radar?.nowcast || [];
 
         frames = past.map(f => ({
             time: f.time,
-            path: f.path
-        }));
+            path: f.path,
+            type: "past"
+        })).concat(
+            nowcast.map(f => ({
+                time: f.time,
+                path: f.path,
+                type: "future"
+            }))
+        );
 
         return frames;
     }
 
-    function attachToMap(map) {
+    function attach(map, reflectivityGroup, futureGroup) {
         mapRef = map;
+        overlayReflectivity = reflectivityGroup;
+        overlayFuture = futureGroup;
     }
 
     function setOpacity(value) {
         opacity = value;
-        if (tileLayer) tileLayer.setOpacity(opacity);
+        if (currentLayer) currentLayer.setOpacity(opacity);
     }
 
     function getFrameCount() {
@@ -51,21 +65,28 @@ const RainViewer = (() => {
         currentIndex = index;
         const frame = frames[currentIndex];
 
-        // Remove leading slash
         const cleanPath = frame.path.replace(/^\//, "");
-
         const urlTemplate = `${TILE_HOST}/${cleanPath}/{z}/{x}/{y}/2/1_1.png`;
 
-        if (tileLayer) mapRef.removeLayer(tileLayer);
+        if (currentLayer) {
+            overlayReflectivity?.removeLayer(currentLayer);
+            overlayFuture?.removeLayer(currentLayer);
+        }
 
-        tileLayer = L.tileLayer(urlTemplate, {
+        const targetGroup = frame.type === "future" ? overlayFuture : overlayReflectivity;
+
+        currentLayer = L.tileLayer(urlTemplate, {
             tileSize: 256,
             opacity: opacity,
-            zIndex: 50,
-            errorTileUrl: ""  // hide missing tiles
+            zIndex: 9999,
+            errorTileUrl: ""
         });
 
-        tileLayer.addTo(mapRef);
+        if (targetGroup) {
+            targetGroup.addLayer(currentLayer);
+        } else {
+            currentLayer.addTo(mapRef);
+        }
     }
 
     function nextFrame() {
@@ -80,7 +101,7 @@ const RainViewer = (() => {
 
     return {
         loadMeta,
-        attachToMap,
+        attach,
         setOpacity,
         getFrameCount,
         getCurrentIndex,

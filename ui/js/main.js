@@ -58,3 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("frame-label").textContent = "NOAA Radar (Reflectivity / Velocity)";
 });
+    // City labels overlay
+    const overlayCities = L.layerGroup().addTo(map);
+    CityLabels.attach(map, overlayCities);
+});

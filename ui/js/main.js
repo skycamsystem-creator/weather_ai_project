@@ -162,3 +162,53 @@ document.addEventListener("DOMContentLoaded", () => {
     // Default mode
     setMode("analyst");
 });
+    // ============================
+    // AI MODE ENGINE
+    // ============================
+
+    const aiModeButtons = document.querySelectorAll("#ai-mode-buttons button");
+    const AI_MODE_API = "/api/ai/mode";
+
+    function setActiveAiModeButton(mode) {
+        aiModeButtons.forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.aiMode === mode);
+        });
+    }
+
+    async function fetchAiMode() {
+        try {
+            const res = await fetch(AI_MODE_API);
+            if (!res.ok) return;
+            const data = await res.json();
+            if (!data.mode) return;
+            setActiveAiModeButton(data.mode);
+        } catch (e) {
+            console.error("Failed to fetch AI mode:", e);
+        }
+    }
+
+    async function setAiMode(mode, source = "ui") {
+        try {
+            const res = await fetch(AI_MODE_API, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ mode, source })
+            });
+            if (!res.ok) return;
+            const data = await res.json();
+            setActiveAiModeButton(data.mode);
+        } catch (e) {
+            console.error("Failed to set AI mode:", e);
+        }
+    }
+
+    aiModeButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const mode = btn.dataset.aiMode;
+            setAiMode(mode, "ui");
+        });
+    });
+
+    // Initial sync + polling for AI-driven changes
+    fetchAiMode();
+    setInterval(fetchAiMode, 5000);

@@ -88,3 +88,22 @@ html, body {
 .leaflet-interactive {
     cursor: pointer;
 }
+#ai-mode-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+#ai-mode-buttons button {
+    background: rgba(30, 40, 90, 0.7);
+    border: 1px solid rgba(120, 150, 255, 0.6);
+    color: #e5ecff;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+#ai-mode-buttons button.active {
+    background: #ffb347;
+    color: #050711;
+}

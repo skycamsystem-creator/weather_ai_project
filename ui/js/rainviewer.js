@@ -48,14 +48,30 @@ const RainViewer = (() => {
         return frames[currentIndex] || null;
     }
 
-    function setFrame(index) {
+        function setFrame(index) {
         if (!mapRef || frames.length === 0) return;
         if (index < 0 || index >= frames.length) return;
 
         currentIndex = index;
         const frame = frames[currentIndex];
 
-        const urlTemplate = `${TILE_HOST}/${frame.path}/{z}/{x}/{y}/2/1_1.png`;
+        // FIX: remove leading slash to avoid double slashes
+        const cleanPath = frame.path.startsWith("/") ? frame.path.slice(1) : frame.path;
+
+        const urlTemplate = `${TILE_HOST}/${cleanPath}/{z}/{x}/{y}/2/1_1.png`;
+
+        if (tileLayer) {
+            mapRef.removeLayer(tileLayer);
+        }
+
+        tileLayer = L.tileLayer(urlTemplate, {
+            tileSize: 256,
+            opacity: opacity,
+            zIndex: 50
+        });
+
+        tileLayer.addTo(mapRef);
+    }/${frame.path}/{z}/{x}/{y}/2/1_1.png`;
 
         if (tileLayer) {
             mapRef.removeLayer(tileLayer);
@@ -94,3 +110,4 @@ const RainViewer = (() => {
         prevFrame
     };
 })();
+

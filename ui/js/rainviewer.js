@@ -10,12 +10,11 @@ const RainViewer = (() => {
 
     async function loadMeta() {
         const res = await fetch(META_URL);
-        if (!res.ok) {
-            throw new Error("Failed to load RainViewer metadata");
-        }
-        const data = await res.json();
+        if (!res.ok) throw new Error("Failed to load RainViewer metadata");
 
-        const past = data.radar && data.radar.past ? data.radar.past : [];
+        const data = await res.json();
+        const past = data.radar?.past || [];
+
         frames = past.map(f => ({
             time: f.time,
             path: f.path
@@ -30,9 +29,7 @@ const RainViewer = (() => {
 
     function setOpacity(value) {
         opacity = value;
-        if (tileLayer) {
-            tileLayer.setOpacity(opacity);
-        }
+        if (tileLayer) tileLayer.setOpacity(opacity);
     }
 
     function getFrameCount() {
@@ -54,19 +51,18 @@ const RainViewer = (() => {
         currentIndex = index;
         const frame = frames[currentIndex];
 
-        // FIX: remove leading slash to avoid double slashes
-        const cleanPath = frame.path.startsWith("/") ? frame.path.slice(1) : frame.path;
+        // Remove leading slash
+        const cleanPath = frame.path.replace(/^\//, "");
 
         const urlTemplate = `${TILE_HOST}/${cleanPath}/{z}/{x}/{y}/2/1_1.png`;
 
-        if (tileLayer) {
-            mapRef.removeLayer(tileLayer);
-        }
+        if (tileLayer) mapRef.removeLayer(tileLayer);
 
         tileLayer = L.tileLayer(urlTemplate, {
             tileSize: 256,
             opacity: opacity,
-            zIndex: 50
+            zIndex: 50,
+            errorTileUrl: ""  // hide missing tiles
         });
 
         tileLayer.addTo(mapRef);
@@ -74,14 +70,12 @@ const RainViewer = (() => {
 
     function nextFrame() {
         if (frames.length === 0) return;
-        const next = (currentIndex + 1) % frames.length;
-        setFrame(next);
+        setFrame((currentIndex + 1) % frames.length);
     }
 
     function prevFrame() {
         if (frames.length === 0) return;
-        const prev = (currentIndex - 1 + frames.length) % frames.length;
-        setFrame(prev);
+        setFrame((currentIndex - 1 + frames.length) % frames.length);
     }
 
     return {

@@ -1,15 +1,36 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const map = L.map("map", {
         center: [37.0, -95.0],
-        zoom: 5,
-        zoomControl: true
+        zoom: 6,
+        minZoom: 5,
+        maxZoom: 10
     });
 
-    // Base map
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 18,
-        attribution: "&copy; OpenStreetMap contributors"
-    }).addTo(map);
+    // Basemaps
+    const baseLayers = {
+        "OpenStreetMap": L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19
+        }),
+
+        "ESRI Satellite": L.tileLayer(
+            "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{x}/{y}",
+            { maxZoom: 19 }
+        ),
+
+        "ESRI Streets": L.tileLayer(
+            "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{x}/{y}",
+            { maxZoom: 19 }
+        ),
+
+        "Dark Matter": L.tileLayer(
+            "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+            { maxZoom: 19 }
+        )
+    };
+
+    baseLayers["OpenStreetMap"].addTo(map);
+
+    L.control.layers(baseLayers, {}, { position: "topright" }).addTo(map);
 
     RainViewer.attachToMap(map);
 
@@ -21,21 +42,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     function updateFrameLabel() {
         const total = RainViewer.getFrameCount();
         const idx = RainViewer.getCurrentIndex() + 1;
-        if (total === 0) {
-            frameLabel.textContent = "Frame: -- / --";
-        } else {
-            frameLabel.textContent = `Frame: ${idx} / ${total}`;
-        }
+        frameLabel.textContent = total === 0 ? "Frame: -- / --" : `Frame: ${idx} / ${total}`;
     }
 
     try {
         await RainViewer.loadMeta();
         if (RainViewer.getFrameCount() > 0) {
-            RainViewer.setFrame(RainViewer.getFrameCount() - 1); // latest
+            RainViewer.setFrame(RainViewer.getFrameCount() - 1);
         }
         updateFrameLabel();
     } catch (err) {
-        console.error("Failed to load RainViewer:", err);
+        console.error("RainViewer load failed:", err);
         frameLabel.textContent = "RainViewer load failed";
     }
 
@@ -50,7 +67,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     opacitySlider.addEventListener("input", (e) => {
-        const value = parseFloat(e.target.value);
-        RainViewer.setOpacity(value);
+        RainViewer.setOpacity(parseFloat(e.target.value));
     });
 });

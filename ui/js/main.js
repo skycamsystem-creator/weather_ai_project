@@ -33,13 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     baseLayers["Mapbox Satellite"].addTo(map);
 
-    // Overlays that all actually do something
+    // Overlays (all real)
     const overlayReflectivity = L.layerGroup().addTo(map);
     const overlayVelocity = L.layerGroup();
     const overlayCities = L.layerGroup().addTo(map);
     const overlayAlerts = L.layerGroup().addTo(map);
 
-    // Boundaries / roads overlays using real tile layers
     const overlayBoundaries = L.tileLayer(
         "https://stamen-tiles.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}.png",
         {
@@ -89,5 +88,5 @@ document.addEventListener("DOMContentLoaded", () => {
         overlayVelocity.eachLayer(l => l.setOpacity(value));
     });
 
-    document.getElementById("frame-label").textContent = "NOAA Radar + Cities + Alerts";
+    document.getElementById("frame-label").textContent = "NOAA Radar + Cities + Alerts (Hybrid Pro Colors)";
 });

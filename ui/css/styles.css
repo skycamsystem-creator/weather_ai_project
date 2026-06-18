@@ -63,7 +63,7 @@ html, body {
     pointer-events: none;
 }
 
-/* Just to keep polygons readable */
+/* Make polygons clickable but not ugly */
 .leaflet-interactive {
     cursor: pointer;
 }

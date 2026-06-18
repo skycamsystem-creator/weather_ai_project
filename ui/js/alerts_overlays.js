@@ -9,6 +9,34 @@ const AlertsOverlay = (() => {
         setInterval(loadAlerts, 5 * 60 * 1000);
     }
 
+    function getAlertColor(event) {
+        const e = (event || "").toLowerCase();
+
+        // Tornado / severe
+        if (e.includes("tornado warning")) return "#ff0000";        // strong red
+        if (e.includes("severe thunderstorm warning")) return "#ffcc00"; // bright yellow
+        if (e.includes("flash flood warning")) return "#00ff00";    // bright green
+
+        // Watches
+        if (e.includes("tornado watch")) return "#ff66cc";          // magenta
+        if (e.includes("severe thunderstorm watch")) return "#ff9900"; // orange
+        if (e.includes("flood watch")) return "#00cc66";            // teal-green
+
+        // Advisories
+        if (e.includes("flood advisory")) return "#66ff66";         // light green
+        if (e.includes("winter storm warning")) return "#9900ff";   // deep purple
+        if (e.includes("winter weather advisory")) return "#9999ff";// soft purple
+        if (e.includes("high wind warning")) return "#ff8800";      // amber
+        if (e.includes("red flag warning")) return "#ff00ff";       // hot pink
+        if (e.includes("special marine warning")) return "#00ffff"; // cyan
+        if (e.includes("heat advisory")) return "#ff6600";          // deep orange
+        if (e.includes("dense fog advisory")) return "#cccccc";     // gray
+        if (e.includes("air quality alert")) return "#66cc00";      // lime
+
+        // Default: softer blue for misc alerts
+        return "#00bfff";
+    }
+
     async function loadAlerts() {
         if (!alertsGroup) return;
 
@@ -26,11 +54,7 @@ const AlertsOverlay = (() => {
             data.features.forEach(f => {
                 const props = f.properties || {};
                 const event = props.event || "";
-                const severity = (props.severity || "").toLowerCase();
-
-                let color = "#00bfff"; // advisory default
-                if (severity === "severe" || severity === "extreme") color = "#ff0000";
-                else if (severity === "moderate") color = "#ffcc00";
+                const color = getAlertColor(event);
 
                 const layer = L.geoJSON(f.geometry, {
                     style: {

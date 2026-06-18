@@ -1,0 +1,79 @@
+/* src/index.css */
+
+body {
+  margin: 0;
+  background: #0d0f12;
+  color: #e8e8e8;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+#root {
+  height: 100vh;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-rows: 70px 1fr 200px;
+  grid-template-columns: 300px 1fr 350px;
+  grid-template-areas:
+    "modes modes modes"
+    "sites summary storms"
+    "feed feed feed";
+  height: 100vh;
+  gap: 12px;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.modes-panel { grid-area: modes; }
+.sites-panel { grid-area: sites; }
+.summary-panel { grid-area: summary; }
+.storms-panel { grid-area: storms; }
+.feed-panel { grid-area: feed; }
+
+.panel-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  opacity: 0.9;
+}
+
+.radar-site {
+  padding: 8px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.07);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.radar-site:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.mode-button {
+  padding: 10px 16px;
+  margin-right: 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  cursor: pointer;
+  display: inline-block;
+  transition: 0.2s;
+}
+
+.mode-button:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.mode-active {
+  background: #4caf50 !important;
+  color: black;
+}

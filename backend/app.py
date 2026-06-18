@@ -34,3 +34,6 @@ if __name__ == "__main__":
 
 from . import ai_modes
 app.include_router(ai_modes.router)
+
+from . import ai_profiles
+app.include_router(ai_profiles.router)

@@ -212,3 +212,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initial sync + polling for AI-driven changes
     fetchAiMode();
     setInterval(fetchAiMode, 5000);
+    // ============================
+    // AI BEHAVIOR PROFILE POLLING
+    // ============================
+
+    const AI_BEHAVIOR_API = "/api/ai/behavior";
+
+    async function fetchAiBehavior() {
+        try {
+            const res = await fetch(AI_BEHAVIOR_API);
+            if (!res.ok) return;
+            const data = await res.json();
+
+            // You can display this later in a sidebar or debug panel
+            console.log("AI Behavior:", data);
+
+        } catch (e) {
+            console.error("Failed to fetch AI behavior:", e);
+        }
+    }
+
+    // Poll every 5 seconds so UI + AIs stay synced
+    setInterval(fetchAiBehavior, 5000);
+    fetchAiBehavior();
